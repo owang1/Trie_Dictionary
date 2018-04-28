@@ -82,6 +82,27 @@ int main(int argc, char *argv[]) {
         std::string v = k;
         map->insert(k, v);
     }
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
+    v
     auto insert_stop  = Clock::now();
     auto insert_diff  = insert_stop - insert_start;
 

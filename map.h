@@ -24,7 +24,8 @@ typedef enum {
 // Structures ------------------------------------------------------------------
 
 struct Node {
-    std::string key;
+    //std::string key;
+    char key;
     bool isEnd;
     std::vector<Node*> children;
 
@@ -34,6 +35,7 @@ struct Node {
         }
     }
 };
+
 
 // Classes ---------------------------------------------------------------------
 
@@ -54,16 +56,5 @@ private:
             Node *root = nullptr; 
 
 };
-/*
-class BSTMap : public Map {
-public:
-            void            insert(const std::string &key, const std::string &value);
-            const Entry     search(const std::string &key);
-            void            dump(std::ostream &os, DumpFlag flag);
-                           ~BSTMap() { delete root; }
-private:
-            Node    *root = nullptr;
-};
-*/
 
 // vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:

@@ -6,23 +6,45 @@
 
 // Prototypes ------------------------------------------------------------------
 
-Node *insert_r(Node *node, char &letter);
-bool search_r(Node *node, std::string key);
+Node *insert_help(Node *node, char &letter);
+Node* findChild(Node *node, char &letter);      // Look for/create child node if needed
 void    dump_r(Node *node, std::ostream &os, DumpFlag flag);
+
 
 // Methods ---------------------------------------------------------------------
 
 void            TrieMap::insert(std::string key) {
+    Node *curr = root;
     for(unsigned int i = 0; i < key.length(); i++){
-        root = insert_r(root, key[i]);
-    }
+        Node* temp = findChild(curr, key[i]);    // Go to the child of the node
+        if(temp == NULL){
+            // Need to create a new node
+            curr->children.push_back(temp);
+            curr = insert_help(temp, key[i]);
+        }else{
+            curr = temp;
+        }
+        if(i == key.length() - 1){
+            curr->isEnd = true;
+        }
+    }   
 }
 
 bool     TrieMap::search(std::string key) {
-    bool result = search_r(root, key);
+    bool result = true;
+    Node* curr = root;
+    for(size_t i = 0; i < key.length(); i++){
+        Node* temp = findChild(curr, key[i]);
+        if(temp == NULL){
+            return false;
+        }else if((i == key.length() -1 ) && !curr->isEnd){
+            // End of string reached but isEnd is true
+            return false;
+        }else{
+            curr = temp;
+        }
+    }
     return result;
-   // return (result == nullptr ? NONE : result->entry);
-   // return (result == nullptr : result->key);
 }
 
 void            TrieMap::dump(std::ostream &os, DumpFlag flag) {
@@ -31,40 +53,20 @@ void            TrieMap::dump(std::ostream &os, DumpFlag flag) {
 
 // Internal Functions ----------------------------------------------------------
 
-Node *insert_r(Node *node, char &letter) {
-    if (node == nullptr) {
-        return new Node(letter, false, {} );
+Node *findChild(Node *node, char &letter){
+    // Iterate through <Node*> children vector
+    for(size_t i = 0; i < node->children.size(); i++){
+        Node* temp = node->children.at(i);
+        if(temp->key == letter){
+            return temp;       
+        }
     }
-/*
-    if (node->entry.first == key) {
-        node->entry.second = value;
-        return node;
-    }
-
-    if (node->entry.first > key) {
-        node->left = insert_r(node->left, key, value);
-    } else {
-        node->right = insert_r(node->right, key, value);
-    }
-*/
-    return node;
+    // Returns NULL if a child with that letter doesn't exist yet
+    return NULL;
 }
 
-bool search_r(Node *node, std::string str) {
-    //if (node == nullptr) {
-    //    return nullptr;
-    //}
-/*
-    if (node->entry.first == key) {
-        return node;
-    }
-
-    if (node->entry.first > key) {
-        return search_r(node->left, key);
-    } else {
-        return search_r(node->right, key);
-    }*/
-    return false;
+Node *insert_help(Node *node, char &letter) {
+    return new Node{letter, false, {}};
 }
 
 void dump_r(Node *node, std::ostream &os, DumpFlag flag) {
