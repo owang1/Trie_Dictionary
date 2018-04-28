@@ -8,23 +8,18 @@ Trie Implementation
 
 # IMPORTS
 
-import os
-import sys
-import string
-
-# CREATE CLASS
-
-class Node():
+class Node(object):
+    
     def __init__(N, char: str):
         N.value = char
+        N.children = []
         N.end_word = False
-        N.children = set([])
 
 # INSERT FUNCTION
 
 def insert(root, word: str):
 
-    # Set node equal to root
+     # Set node equal to root
     node = root
 
     # Iterate through given word
@@ -38,14 +33,15 @@ def insert(root, word: str):
 
             # If character is in children, point node to child
             if child.value == c:
-                in_children = True
                 node = child
-                break;
+                in_children = True
+                break
 
-            # If character is NOT in children, add a new child
-            if not in_children:
-                next_node = Node(c)
-                node.children.append(next_node)
+        # If character is NOT in children, add a new child
+        if not in_children:
+            next_node = Node(c)
+            node.children.append(next_node)
+            node = next_node
 
     # Mark last character as leaf node
     node.end_word = True
@@ -65,23 +61,35 @@ def search(root, word: str):
     for c in word:
 
         # Keep track of whether or not character is found
-        char_found = False
+        in_children = False
 
         for child in node.children:
 
             # If character is found in existing child, set char_found to True
-            char_found = True
-            node = child
-            break
+            if child.value == c:
+                in_children = True
+                node = child
+                break
 
         # If character is not found, return False
-        if not char_found:
+        if not in_children:
             return False
 
     # If not return before, the word has been found; return True
-    return True
+    if node.end_word:
+        return True
+    else:
+        return False
 
 # MAIN
 
 if __name__ == "__main__":
     root = Node('*')
+    insert(root, "hackathon")
+    insert(root, 'hack')
+
+    print(search(root, 'hac'))
+    print(search(root, 'hack'))
+    print(search(root, 'hackathon'))
+    print(search(root, 'ha'))
+    print(search(root, 'hammer'))
