@@ -9,9 +9,10 @@
 #include <unistd.h>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
 
-
-void processWord(std::string &str);
+void makeLower(std::string &str);
+void checkAlpha(std::string &str);
 // Main execution --------------------------------------------------------------
 
 int main(int argc, char *argv[]) {
@@ -25,63 +26,57 @@ int main(int argc, char *argv[]) {
     int count = 0;
     int numFound = 0;
     std::string movieName = argv[1];
-
+    
     // Declare a TrieMap and set the necessary variables
     Node *root = new Node('\0', false);
     TrieMap *trie = new TrieMap(root);
     std::string word;
     bool found;
-    //std::string filterWord;
-    // Get & store dictionary input from file stream -> /usr/share/dict/words 
+    
+    // Store dictionary words om the Trie
     std::string dictionaryName = "/usr/share/dict/words";
     std::ifstream dictionaryFile;
 
     dictionaryFile.open(dictionaryName);    
-    while (dictionaryFile >> word) {        
+    while (dictionaryFile >> word) {     
+
+        // Convert every word to all lowercase   
+        makeLower(word);
         trie->insert(word);
     }
-    /*
-    while(dictionaryFile >> word){
-        char c;
-        int i = 0;
-        while(word[i]){
-            c = word[i];
-            putchar(tolower(c));
-            i++;
-        }
-        trie->insert(word);
-    }*/
+    
 
+    // Get input from specified text file 
     std::ifstream movieFile;
     movieFile.open(movieName);
-    /*while(movieFile >> word){
-
-        bool found = trie->search(word);
-        if(found){
-            numFound++;          
-            std::cout << word << std::endl;    
-        }
-        count++;
-    }*/
+    
+    // Check existence of each word in the dictionary trie
     while(movieFile >> word){
- //       filterWord = processWord(word);
+
+        // Handle case and punctuation
+        makeLower(word);
+        
         if(word.size() > 1){
-        processWord(word);
+            checkAlpha(word);
         }
         found = trie->search(word);
+
         if(found){
-            numFound++;
+            numFound++;             // Increment matches
         }   
-        count++;    
+        count++;                    // Increment total "words"
     }
     
     float percent = 100*((float)numFound / count);
  
     // Display results 
+    std::cout << std::endl;
+    std::cout << "TRIE DICTIONARY RESULTS" << std::endl;
+    std::cout << "-----------------------" << std::endl;
     std::cout << "NUMBER OF VALID WORDS: " << numFound << std::endl;
     std::cout << "TOTAL: " << count << std::endl;
-    std::cout << std::setprecision(3) << "PERCENT VALID: " << percent << "%" << std::endl;
-
+    std::cout << std::setprecision(4) << "PERCENT VALID: " << percent << "%" << std::endl;
+    std::cout << std::endl;
     // FOR TESTING: Output words and frequencies
     // trie->dump(std::cout);
 
@@ -89,9 +84,12 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// Filtering function that deletes the first and/or last characters
-// if they are not in the alphabet (i.e. punctuation)
-void processWord(std::string &str){
+void makeLower(std::string &str){
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+// Deletes first/last letters if they are not alphabetical
+void checkAlpha(std::string &str){
     
     if(!std::isalpha(str.at(0))){
         str.erase(0,1);
