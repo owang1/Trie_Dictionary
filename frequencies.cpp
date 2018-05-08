@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     std::cout << "VALID WORDS: " << numFound << std::endl;
     std::cout << "TOTAL WORDS: " << count << std::endl;
     std::cout << std::setprecision(4) << "PERCENT VALID: " << percent << "%" << std::endl;
-    std::cout << "----------------------------";
+    std::cout << "----------------------------" << std::endl;
     
     delete trie;
     argind++;

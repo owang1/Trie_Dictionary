@@ -20,9 +20,6 @@ all:		$(LIBRARY) $(PROGRAMS)
 $(LIBRARY):	$(LIB_OBJ)
 	$(AR) $(ARFLAGS) $@ $(LIB_OBJ)
 
-#map_test:	map_test.o map.h $(LIBRARY)
-#	$(LD) $(LDFLAGS) -o $@ $< $(LIBRARY)
-
 map_bench:	map_bench.o map.h $(LIBRARY)
 	$(LD) $(LDFLAGS) -o $@ $< $(LIBRARY)
 
