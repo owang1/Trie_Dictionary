@@ -11,104 +11,65 @@
 
 #include <strings.h>
 #include <unistd.h>
+#include <algorithm>
+#include <iomanip>
+#include <fstream>
+void makeLower(std::string &str);
+void checkAlpha(std::string &str); 
+
 
 // Type Definitions ------------------------------------------------------------
 
 typedef std::chrono::high_resolution_clock  Clock;
 
-// Utility functions -----------------------------------------------------------
-
-void usage(int status) {
-    std::cout << "usage: map_bench" << std::endl
-              << "    -b BACKEND    Which Map backend (unsorted, sorted, bst, rbtree, treap, unordered, chained, open)" << std::endl
-              << "    -n NITEMS     Number of items to benchmark" << std::endl
-              << "    -p PADLENGTH  Amount to pad the keys with leading 0's" << std::endl;
-
-    exit(status);
-}
-
-void parse_command_line_options(int argc, char *argv[], Map *&map, int &nitems, int &padlength) {
-    int c;
-
-    while ((c = getopt(argc, argv, "hb:n:p:")) != -1) {
-        switch (c) {
-            case 'b':
-                if (strcasecmp(optarg, "trie") == 0) {
-                    map = new TrieMap();
-                } else {
-                    usage(1);
-                }
-                break;
-            case 'n':
-                nitems = atoi(optarg);
-                break;
-            case 'p':
-                padlength = atoi(optarg);
-                break;
-            case 'h':
-                usage(0);
-                break;
-            default:
-                usage(1);
-                break;
-        }
-    }
-
-    if (map == nullptr) {
-    	map = new TrieMap();
-    }
-}
-
-std::string int_to_key(int i, size_t padlength) {
-    std::string k = std::to_string(i);
-    if (padlength > k.size())
-        k.insert(k.begin(), padlength - k.size(), '0');
-    return k;
-}
-
-// Main execution --------------------------------------------------------------
-
 int main(int argc, char *argv[]) {
-    Map *map       = nullptr;
-    int  nitems    = 1;
-    int  padlength = 1;
-
-    parse_command_line_options(argc, argv, map, nitems, padlength);
-
+    if(argc == 3){
+    std::string lookupName = argv[2];
+    Node *root = new Node('\0', false);
+    TrieMap *trie = new TrieMap(root);
+    std::string word;
+    
     // Insert
+    std::string dictionaryName = argv[1];
+    std::ifstream dictionaryFile;
+    
+    dictionaryFile.open(dictionaryName);
     auto insert_start = Clock::now();
-    for (int i = 0; i < nitems; i++) {
+    
+    while(dictionaryFile >> word){
+        makeLower(word);
+        trie->insert(word);
+    }
+    auto insert_stop = Clock::now();
+    auto insert_diff = insert_stop - insert_start; 
+
+    /*for (int i = 0; i < nitems; i++) {
         std::string k = int_to_key(i, padlength);
         std::string v = k;
         map->insert(k, v);
     }
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
-    v
     auto insert_stop  = Clock::now();
     auto insert_diff  = insert_stop - insert_start;
-
+*/
     std::cout << "Insert: " << std::setprecision(5) << std::chrono::duration<double>(insert_diff).count() << " s" << std::endl;
 
     // Search
+
+    std::ifstream lookupFile;
+    lookupFile.open(lookupName);
+
+    auto search_start = Clock::now();
+    while(lookupFile >> word){
+        makeLower(word);
+        
+        if(word.size() > 1){
+            checkAlpha(word);;
+        }
+        trie->search(word);
+    }
+    auto search_stop = Clock::now();
+    auto search_diff = search_stop - search_start;
+/*
     auto search_start = Clock::now();
     for (int i = 0; i < nitems; i++) {
         std::string k = int_to_key(i, padlength);
@@ -116,11 +77,26 @@ int main(int argc, char *argv[]) {
     }
     auto search_stop  = Clock::now();
     auto search_diff  = search_stop - search_start;
-
+*/
     std::cout << "Search: " << std::setprecision(5) << std::chrono::duration<double>(search_diff).count() << " s" << std::endl;
 
-    delete map;
+    delete trie;
+    }
     return 0;
 }
+void makeLower(std::string &str){
+        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 
+}
+
+// Deletes first/last letters if they are not alphabetical
+void checkAlpha(std::string &str){
+
+    if(!std::isalpha(str.at(0))){
+         str.erase(0,1);
+    }
+    if(!std::isalpha(str.back())){
+         str.pop_back();       
+    }
+ }
 // vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:

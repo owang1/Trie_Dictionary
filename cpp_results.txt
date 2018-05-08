@@ -1,0 +1,48 @@
+finding_nemo.txt
+----------------------------
+VALID WORDS: 8267
+TOTAL WORDS: 8755
+PERCENT VALID: 94.43%
+----------------------------
+shrek.txt
+----------------------------
+VALID WORDS: 6857
+TOTAL WORDS: 7262
+PERCENT VALID: 94.42%
+----------------------------
+the_kings_speech.txt
+----------------------------
+VALID WORDS: 8509
+TOTAL WORDS: 9122
+PERCENT VALID: 93.28%
+----------------------------
+the_imitation_game.txt
+----------------------------
+VALID WORDS: 9152
+TOTAL WORDS: 9632
+PERCENT VALID: 95.02%
+----------------------------
+white_chicks.txt
+----------------------------
+VALID WORDS: 9132
+TOTAL WORDS: 9820
+PERCENT VALID: 92.99%
+----------------------------
+grown_ups.txt
+----------------------------
+VALID WORDS: 8025
+TOTAL WORDS: 8309
+PERCENT VALID: 96.58%
+----------------------------
+star_wars.txt
+----------------------------
+VALID WORDS: 8281
+TOTAL WORDS: 9180
+PERCENT VALID: 90.21%
+----------------------------
+the_martian.txt
+----------------------------
+VALID WORDS: 9276
+TOTAL WORDS: 10052
+PERCENT VALID: 92.28%
+----------------------------

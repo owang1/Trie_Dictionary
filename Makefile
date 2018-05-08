@@ -10,7 +10,7 @@ LIBRARY=	libmap.a
 LIB_SRC=    trie.cpp
 LIB_OBJ=	$(LIB_SRC:.cpp=.o)
 
-PROGRAMS=	frequencies
+PROGRAMS=	frequencies map_bench
 
 all:		$(LIBRARY) $(PROGRAMS)
 
@@ -23,8 +23,8 @@ $(LIBRARY):	$(LIB_OBJ)
 #map_test:	map_test.o map.h $(LIBRARY)
 #	$(LD) $(LDFLAGS) -o $@ $< $(LIBRARY)
 
-#map_bench:	map_bench.o map.h $(LIBRARY)
-#	$(LD) $(LDFLAGS) -o $@ $< $(LIBRARY)
+map_bench:	map_bench.o map.h $(LIBRARY)
+	$(LD) $(LDFLAGS) -o $@ $< $(LIBRARY)
 
 frequencies:	frequencies.o map.h $(LIBRARY)
 	$(LD) $(LDFLAGS) -o $@ $< $(LIBRARY)

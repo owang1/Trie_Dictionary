@@ -22,10 +22,11 @@ int main(int argc, char *argv[]) {
         std::cout << "Usage: ./frequences [filename.txt]" << std::endl;
         return 1;
     }
-
+    int argind = 1;
+    while(argind < argc){
     int count = 0;
     int numFound = 0;
-    std::string movieName = argv[1];
+    std::string movieName = argv[argind];
     
     // Declare a TrieMap and set the necessary variables
     Node *root = new Node('\0', false);
@@ -33,7 +34,7 @@ int main(int argc, char *argv[]) {
     std::string word;
     bool found;
     
-    // Store dictionary words om the Trie
+    // Store dictionary words in the Trie
     std::string dictionaryName = "/usr/share/dict/words";
     std::ifstream dictionaryFile;
 
@@ -71,16 +72,16 @@ int main(int argc, char *argv[]) {
  
     // Display results 
     std::cout << std::endl;
-    std::cout << "TRIE DICTIONARY RESULTS" << std::endl;
-    std::cout << "-----------------------" << std::endl;
-    std::cout << "NUMBER OF VALID WORDS: " << numFound << std::endl;
-    std::cout << "TOTAL: " << count << std::endl;
+    std::cout << argv[argind] << std::endl;
+    std::cout << "----------------------------" << std::endl;
+    std::cout << "VALID WORDS: " << numFound << std::endl;
+    std::cout << "TOTAL WORDS: " << count << std::endl;
     std::cout << std::setprecision(4) << "PERCENT VALID: " << percent << "%" << std::endl;
-    std::cout << std::endl;
-    // FOR TESTING: Output words and frequencies
-    // trie->dump(std::cout);
-
+    std::cout << "----------------------------";
+    
     delete trie;
+    argind++;
+    }
     return 0;
 }
 
