@@ -25,7 +25,8 @@ struct Node {
         this->key = key;
         this->isEnd = isEnd;
     }
-    ~Node() {        
+    ~Node() {      
+
         for(size_t i=0; i < children.size(); i++){
             delete children[i];
         }
@@ -43,7 +44,7 @@ public:
                                 ~TrieMap() { delete root; }
                                 TrieMap(Node *root) { this->root = root; }
 private:
-            Node *root; 
+            Node *root = nullptr; 
 
 };
 

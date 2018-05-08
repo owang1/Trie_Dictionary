@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
         std::cout << "To test random, execute: ./map_bench [rand_#.txt] [insert_#.txt]" << std::endl;
         return 1;
     }
-
+    
     int count = 0;
     double total_insert = 0;
     double total_search = 0;
@@ -64,8 +64,7 @@ int main(int argc, char *argv[]) {
     auto insert_stop = Clock::now();
     auto insert_diff = insert_stop - insert_start; 
     total_insert = total_insert + std::chrono::duration<double>(insert_diff).count();
-    std::cout << "Insert: " << std::setprecision(5) << std::chrono::duration<double>(insert_diff).count() << " s" << std::endl;
-
+    
     // Search
     std::string lookupName = argv[2];
     std::ifstream lookupFile;
@@ -78,7 +77,6 @@ int main(int argc, char *argv[]) {
     auto search_stop = Clock::now();
     auto search_diff = search_stop - search_start;
     total_search = total_search + std::chrono::duration<double>(search_diff).count();
-    std::cout << "Search: " << std::setprecision(5) << std::chrono::duration<double>(search_diff).count() << " s" << std::endl;
 
     dictionaryFile.close();
     lookupFile.close();
@@ -87,6 +85,7 @@ int main(int argc, char *argv[]) {
     }
     double average_insert = total_insert/count;
     double average_search = total_search/count;
+   
     std::cout << "Average Insert: " << std::setprecision(5) << average_insert << " s" << std::endl;
     std::cout << "Average Search: " << std::setprecision(5) << average_search << " s" << std::endl;
     return 0;
