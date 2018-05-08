@@ -14,21 +14,17 @@
 
 // Type definitions ------------------------------------------------------------
 
-typedef enum {
-    DUMP_KEY,
-    DUMP_VALUE,
-    DUMP_KEY_VALUE,
-    DUMP_VALUE_KEY,
-} DumpFlag;
-
 // Structures ------------------------------------------------------------------
 
 struct Node {
-    //std::string key;
     char key;
     bool isEnd;
     std::vector<Node*> children;
 
+    Node(char key, bool isEnd=false){
+        this->key = key;
+        this->isEnd = isEnd;
+    }
     ~Node() {        
         for(size_t i=0; i < children.size(); i++){
             delete children[i];
@@ -39,21 +35,15 @@ struct Node {
 
 // Classes ---------------------------------------------------------------------
 
-class Map {
-public:
-    virtual void                insert(std::string key) {}
-    virtual bool                search(std::string key) { return NULL; }
-    virtual void                dump(std::ostream &os, DumpFlag flag) {}
-    virtual                     ~Map() {}
-};
-class TrieMap : public Map {
+class TrieMap {
 public:
             void                insert(std::string key);
             bool                search(std::string key);
-            void                dump(std::ostream &os, DumpFlag flag);
+            void                dump(std::ostream &os);
                                 ~TrieMap() { delete root; }
+                                TrieMap(Node *root) { this->root = root; }
 private:
-            Node *root = nullptr; 
+            Node *root; 
 
 };
 

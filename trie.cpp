@@ -6,30 +6,35 @@
 
 // Prototypes ------------------------------------------------------------------
 
-Node *insert_help(Node *node, char &letter);
-Node* findChild(Node *node, char &letter);      // Look for/create child node if needed
-void    dump_r(Node *node, std::ostream &os, DumpFlag flag);
+Node* findChild(Node *node, char &letter);
+void    dump_r(Node *node, std::ostream &os);
 
 
 // Methods ---------------------------------------------------------------------
-
+// Insert function to build the Trie
 void            TrieMap::insert(std::string key) {
+    // Start at the root
     Node *curr = root;
+    // Iterate through each letter of the key
     for(unsigned int i = 0; i < key.length(); i++){
-        Node* temp = findChild(curr, key[i]);    // Go to the child of the node
+        Node* temp = findChild(curr, key[i]);    
         if(temp == NULL){
             // Need to create a new node
+            temp = new Node(key[i], false);
             curr->children.push_back(temp);
-            curr = insert_help(temp, key[i]);
+            curr = temp;
         }else{
+
             curr = temp;
         }
+        // Mark the end of a word
         if(i == key.length() - 1){
             curr->isEnd = true;
         }
     }   
 }
 
+// Boolean function that returns true if the key is found in the trie
 bool     TrieMap::search(std::string key) {
     bool result = true;
     Node* curr = root;
@@ -37,8 +42,7 @@ bool     TrieMap::search(std::string key) {
         Node* temp = findChild(curr, key[i]);
         if(temp == NULL){
             return false;
-        }else if((i == key.length() -1 ) && !curr->isEnd){
-            // End of string reached but isEnd is true
+        }else if((i == key.length() -1 ) && !temp->isEnd){
             return false;
         }else{
             curr = temp;
@@ -47,8 +51,8 @@ bool     TrieMap::search(std::string key) {
     return result;
 }
 
-void            TrieMap::dump(std::ostream &os, DumpFlag flag) {
-    dump_r(root, os, flag);
+void            TrieMap::dump(std::ostream &os) {
+    dump_r(root, os);
 }
 
 // Internal Functions ----------------------------------------------------------
@@ -58,6 +62,7 @@ Node *findChild(Node *node, char &letter){
     for(size_t i = 0; i < node->children.size(); i++){
         Node* temp = node->children.at(i);
         if(temp->key == letter){
+            // Return temp pointer to existing child node
             return temp;       
         }
     }
@@ -65,23 +70,19 @@ Node *findChild(Node *node, char &letter){
     return NULL;
 }
 
-Node *insert_help(Node *node, char &letter) {
-    return new Node{letter, false, {}};
-}
-
-void dump_r(Node *node, std::ostream &os, DumpFlag flag) {
+// Debugging function that displays contents of the Trie 
+void dump_r(Node *node, std::ostream &os) {
     if (node == nullptr) {
         return;
     }
-/*
-    dump_r(node->right, os, flag);
-    switch (flag) {
-        case DUMP_KEY:          os << node->entry.first  << std::endl; break;
-        case DUMP_VALUE:        os << node->entry.second << std::endl; break;
-        case DUMP_KEY_VALUE:    os << node->entry.first  << "\t" << node->entry.second << std::endl; break;
-        case DUMP_VALUE_KEY:    os << node->entry.second << "\t" << node->entry.first  << std::endl; break;
+    for(size_t i = 0; i < node->children.size(); i++){
+        os << node -> children[i] -> key;
+        dump_r(node -> children[i], os);
+        if(node->children[i]->isEnd){
+            os << std::endl;
+        }
+
     }
-    dump_r(node->left, os, flag);*/
 }
 
 // vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:

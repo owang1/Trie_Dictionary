@@ -7,86 +7,98 @@
 
 #include <strings.h>
 #include <unistd.h>
+#include <fstream>
+#include <iomanip>
 
-// Utility functions -----------------------------------------------------------
 
-void usage(int status) {
-    std::cout << "usage: frequencies" << std::endl
-              << "    -b BACKEND    Which Map backend (unsorted, sorted, bst, rbtree, treap, unordered, chained, open)" << std::endl
-              << "    -d DUMPFLAG   Which dump flag (key, value, key_value, value_key)" << std::endl;
-
-    exit(status);
-}
-
-void parse_command_line_options(int argc, char *argv[], Map *&map, DumpFlag &flag) {
-    int c;
-
-    while ((c = getopt(argc, argv, "hb:d:")) != -1) {
-        switch (c) {
-            case 'b':
-                if (strcasecmp(optarg, "trie") == 0) {
-                    map = new TrieMap();
-                } else {
-                    usage(1);
-                }
-                break;
-            case 'd':
-                if (strcasecmp(optarg, "key") == 0) {
-                    flag = DUMP_KEY;
-                } else if (strcasecmp(optarg, "value") == 0) {
-                    flag = DUMP_VALUE;
-                } else if (strcasecmp(optarg, "key_value") == 0) {
-                    flag = DUMP_KEY_VALUE;
-                } else if (strcasecmp(optarg, "value_key") == 0) {
-                    flag = DUMP_VALUE_KEY;
-                } else {
-                    usage(1);
-                }
-                break;
-            case 'h':
-                usage(0);
-                break;
-            default:
-                usage(1);
-                break;
-        }
-    }
-
-    if (map == nullptr) {
-    	map = new TrieMap();
-    }
-}
-
-std::string increment(const std::string &s) {
-    return std::to_string(std::stoi(s) + 1);
-}
-
+void processWord(std::string &str);
 // Main execution --------------------------------------------------------------
 
 int main(int argc, char *argv[]) {
-    Map *map = nullptr;
-    DumpFlag flag = DUMP_VALUE_KEY;
-    std::string word;
 
-    parse_command_line_options(argc, argv, map, flag);
-
-    // Read input from STDIN
-    while (std::cin >> word) {
-        auto result = map->search(word);
-        auto value  = std::string("0");
-
-        if (result != NONE) {
-            value = result.second;
-        }
-            
-        map->insert(word, increment(value));
+    // Usage statement
+    if(argc < 2){
+        std::cout << "Usage: ./frequences [filename.txt]" << std::endl;
+        return 1;
     }
 
-    // Output words and frequencies
-    map->dump(std::cout, flag);
+    int count = 0;
+    int numFound = 0;
+    std::string movieName = argv[1];
 
-    delete map;
+    // Declare a TrieMap and set the necessary variables
+    Node *root = new Node('\0', false);
+    TrieMap *trie = new TrieMap(root);
+    std::string word;
+    bool found;
+    //std::string filterWord;
+    // Get & store dictionary input from file stream -> /usr/share/dict/words 
+    std::string dictionaryName = "/usr/share/dict/words";
+    std::ifstream dictionaryFile;
+
+    dictionaryFile.open(dictionaryName);    
+    while (dictionaryFile >> word) {        
+        trie->insert(word);
+    }
+    /*
+    while(dictionaryFile >> word){
+        char c;
+        int i = 0;
+        while(word[i]){
+            c = word[i];
+            putchar(tolower(c));
+            i++;
+        }
+        trie->insert(word);
+    }*/
+
+    std::ifstream movieFile;
+    movieFile.open(movieName);
+    /*while(movieFile >> word){
+
+        bool found = trie->search(word);
+        if(found){
+            numFound++;          
+            std::cout << word << std::endl;    
+        }
+        count++;
+    }*/
+    while(movieFile >> word){
+ //       filterWord = processWord(word);
+        if(word.size() > 1){
+        processWord(word);
+        }
+        found = trie->search(word);
+        if(found){
+            numFound++;
+        }   
+        count++;    
+    }
+    
+    float percent = 100*((float)numFound / count);
+ 
+    // Display results 
+    std::cout << "NUMBER OF VALID WORDS: " << numFound << std::endl;
+    std::cout << "TOTAL: " << count << std::endl;
+    std::cout << std::setprecision(3) << "PERCENT VALID: " << percent << "%" << std::endl;
+
+    // FOR TESTING: Output words and frequencies
+    // trie->dump(std::cout);
+
+    delete trie;
     return 0;
 }
 
+// Filtering function that deletes the first and/or last characters
+// if they are not in the alphabet (i.e. punctuation)
+void processWord(std::string &str){
+    
+    if(!std::isalpha(str.at(0))){
+        str.erase(0,1);
+    }
+    if(!std::isalpha(str.back())){
+        str.pop_back();
+    }
+    
+}
 // vim: set sts=4 sw=4 ts=8 expandtab ft=cpp:
