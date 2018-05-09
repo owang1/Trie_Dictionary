@@ -1,7 +1,29 @@
-Benchmark Data for Execution time (microseconds)
+Benchmark Data for Execution time (microseconds) of Trie insertion and search.
+
+We used the benchmarking script, map_bench.cpp, to see how the trie executed
+for included testing textfiles, labeled pre_#.txt, rand_#.txt, and insert_#.txt.
+The # signifies how many words are in that file.
+
+For examples: ./map_bench pre_10.txt insert_10.txt 
+
+All files consist of 6 letter words generated on listofrandomwords.com, but the
+prefix (pre_#) files all begin with the letter "a." We hypothesized that sets of
+words that shared a common prefix would run faster because the trie would contain
+just 1 child on the top level. Note that map_bench runs 5 tests and averages out
+the results.
+
+
 |             |    5    |     10    |    20    |    50    |    100    |
-|-------------|-------------------------------------------|-----------|
+|-------------|---------|-----------|----------|----------|-----------|
 |RandInsert   | 2.0089  |  3.39000  |  5.9223  |  12.845  |  25.3440  |
 |RandSearch   | .39408  |  .6864    |  1.2912  |  3.7858  |  7.8494   |
 |PrefixInsert | 1.8974  |  3.0594   |  5.1098  |  11.306  |    22     | 
 |PrefixSearch | .32012  |  .45594   |  .8048   |  1.6935  |  3.5265   |
+
+
+We can see that sharing even just 1 letter prefix makes insertion and search operations
+noticeably quicker. For instance, tests for the 100 words saw the prefix sets execute
+search operations twice as fast. 
+
+
+
