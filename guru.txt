@@ -1,3 +1,1 @@
-Hello this is an example to push
-
-this is an edit to push
+hello this is an edit to push
